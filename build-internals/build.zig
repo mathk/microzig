@@ -104,6 +104,7 @@ pub const Target = struct {
             .linker_script = options.linker_script orelse from.linker_script,
             .entry = options.entry orelse from.entry,
             .patch_elf = options.patch_elf orelse from.patch_elf,
+            .stack = from.stack,
         };
         return ret;
     }
@@ -256,6 +257,8 @@ pub const Stack = union(enum) {
     address: usize,
     /// Place the stack at the end of the n-th ram memory region.
     ram_region_index: usize,
+    /// Place the stack at the end of the named ram memory region.
+    ram_region_name: []const u8,
     /// Place the stack at a symbol's address.
     symbol_name: []const u8,
 };

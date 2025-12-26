@@ -5,14 +5,18 @@ const systick = stm32.systick;
 const board = microzig.board;
 const HTS221 = microzig.drivers.sensor.HTS221;
 
+const DMA_Handler = stm32.dma.DMA1_Channel4.DMA_Handler;
+
 pub const microzig_options: microzig.Options = .{
     .logFn = microzig.board.uart_logger.log,
     .interrupts = .{
         .SysTick = .{ .c = systick.SysTick_handler },
+        .DMA1_Channel4 = .{ .c = DMA_Handler },
     },
 };
 
 pub fn init() void {
+    stm32.dma.DMA1_Channel4.enable_interrupt();
     board.init();
     board.init_log();
     systick.init() catch {
@@ -21,6 +25,7 @@ pub fn init() void {
 }
 
 pub fn main() !void {
+    std.log.info("Starting main", .{});
     const clock = try stm32.systick_timer.clock_device();
     var i2c1 = board.i2c1();
     try i2c1.apply();
